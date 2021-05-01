@@ -32,7 +32,7 @@ void fit(float delta, float error, int x_row[], float (*w)[])
 void read_binary(int (*direction)[3]){
 	for(int x = 0; x < 3; x++){
 		int value;
-		printf("INGRESE EL BINARIO: %d\n", x);
+		printf("INGRESE EL DIGITO [%d]:", x);
 		scanf("%d", &value);
 		if(value != 0 && value != 1) {
 			printf("VALOR INGRESADO ES INCORRECTO %d\n", value);
@@ -48,7 +48,7 @@ void read_result(int index, int *direction){
 	int value;
 	bool save = false;
 	while(!save){
-		printf("ESCRIBA EL RESULTADO:\n");
+		printf("ESCRIBA EL VALOR ESPERADO:\n");
 		scanf("%d", &value);
 		if(value >= 0 && value <= 7){
 			(*direction) = value;
@@ -66,21 +66,20 @@ int main()
 	float error_level;
 	float w[COLS] = {3.12, 2.00, 1.86};
 	bool error_passed = false;
-	char exit = 'Y';
+	char exit='Y';
 
 	int X_Train[ROWS][COLS];
 	int y_Train[ROWS];
 
 	int X_Test[COLS];
 
-	printf("ESCOJA EL NIVEL DE DELTA:\n");
+	printf("INGRESE EL VALOR DE DELTA:\n");
 	scanf("%f", &delta);
-	printf("ESCOJA EL NIVEL DE ERROR:\n");
+	printf("INGRESE EL ERROR DESEADO:\n");
 	scanf("%f", &error_level);
 
 
-	
-	while(!error_passed) {
+	while(error_passed==false) {
 		printf("----------- ITERACIÓN %d ------------\n", fors);
 		for(int i = 0; i <= ROWS-1; i++){
 			read_binary(&X_Train[i]);
@@ -109,9 +108,7 @@ int main()
 			printf("W2: %f\n", w[1]);
 			printf("W3: %f\n", w[2]);
 			printf("+++++++++++++++++++++++++++++++++++++\n");
-			
-			
-			
+
 		}
 
 		printf("--------------------------------\n");
@@ -119,13 +116,14 @@ int main()
 		fors++;
 	}
 
-
-	printf("------------- EJERCICIOS ------------\n");
-	while(exit == 'Y' || exit == 'y')
-	{
-		read_binary(&X_Test);
-		printf("EL RESULTADO ES DE: %f\n", predict(X_Test, w));
-		printf("DESEA CONTINUAR? PRESIONE Y/y \n");
-		scanf(" %c", &exit);
+	if(error_passed==true){
+		printf("------------- EJERCICIOS ------------\n");
+		while(exit == 'y' || exit=='Y')
+		{
+			read_binary(&X_Test);
+			printf("EL RESULTADO ES DE: %f\n", predict(X_Test, w));
+			printf("DESEA CONTINUAR? PRESIONE Y/y \n");
+			scanf(" %c", &exit);
+		}
 	}
 }
