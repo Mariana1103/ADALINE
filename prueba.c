@@ -1,125 +1,141 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <stdbool.h>
+#include <time.h> 
 
-#define ROWS 7
-#define COLS 3
-
-float predict(int x[], float w[])
+float y_resultado(int patrones[], float pesos[])
 {
-	float result = 0;
-	for (int i = 0; i <= ROWS - 1; i++)
+
+	float resultado = 0;
+	for (int i = 0; i <= 2; i++)
 	{
-		result += x[i] * w[i];
+
+		resultado += patrones[i] * pesos[i];
 	}
-	return result;
+	return resultado;
 }
 
-void fit(float delta, float error, int x_row[], float (*w)[])
-{
-	for (int i = 0; i <= COLS - 1; i++)
-	{
-		(*w)[i] = (*w)[i] + (delta * error * x_row[i]);
-	}
+float ajuste(float alfa, float error_calculado, int patron, float peso) {
+    printf("pesos[j] = pesos[j] + (alfa * error_calculado[i] * patrones[i][j])\n");
+    printf("%f = %f + (%f * %f * %d);\n", peso, peso, alfa, error_calculado, patron);
+    return peso + (alfa * error_calculado * patron);
 }
 
-void read_binary(int (*direction)[3]){
-	for(int x = 0; x < 3; x++){
-		int value;
-		printf("INGRESE EL BINARIO: %d\n", x);
-		scanf("%d", &value);
-		if(value != 0 && value != 1) {
-			printf("VALOR INGRESADO ES INCORRECTO %d\n", value);
-			x--;
+// SOLO LEE 1 DIGITO
+int leer_binario(int x){
+	int valor, resultado;
+	bool valido;
+
+	valido = false;
+
+	while(!valido) {
+		printf("INGRESE EL DIGITO [%d]\n", x);
+		scanf("%d", &valor);
+		if(valor != 0 && valor != 1) {
+			printf("VALOR INGRESADO ES INCORRECTO %d\n", valor);
 		} else {
-			(*direction)[x] = value;
+			resultado = valor;
+			valido = true;
 		}
 	}
-	printf("%d %d %d -> ?\n", (*direction)[0], (*direction)[1], (*direction)[2]);
+
+	return resultado;
 }
 
-void read_result(int index, int *direction){
-	int value;
-	bool save = false;
-	while(!save){
-		printf("ESCRIBA EL RESULTADO:\n");
-		scanf("%d", &value);
-		if(value >= 0 && value <= 7){
-			(*direction) = value;
-			save = true;
+int leer_resultado(){
+	int valor;
+	bool valido;
+
+	valido = false;
+	while(!valido){
+		printf("ESCRIBA EL VALOR ESPERADO:\n");
+		scanf("%d", &valor);
+		if(valor >= 0 && valor <= 7){
+			return valor;
 		} else {
 			printf("EL VALOR ES INCORRECTO \n");
 		}
 	}
 }
 
-int main()
-{
-	int fors = 1;
-	float delta;
-	float error_level;
-	float w[COLS] = {0.84, 0.39, 0.78};
-	bool error_passed = false;
-	char exit = 'Y';
-
-	int X_Train[ROWS][COLS];
-	int y_Train[ROWS];
-
-	int X_Test[COLS];
-
-	printf("ESCOJA EL NIVEL DE DELTA:\n");
-	scanf("%f", &delta);
-	printf("ESCOJA EL NIVEL DE ERROR:\n");
-	scanf("%f", &error_level);
-
-
-	while(!error_passed) {
-		for(int i = 0; i <= ROWS; i++){
-			read_binary(&X_Train[i]);
-			read_result(i, &y_Train[i]);
-		}
-		for(int i = 0; i <= ROWS; i++) {
-			printf("%d %d %d -> %d\n", X_Train[i][0], X_Train[i][1], X_Train[i][2], y_Train[i]);
-		}
-		printf("----------- TANDA %d ------------\n", fors);
-
-		for (int i = 0; i <= ROWS; i++)
-		{
-			printf("++++++++++++++ TEST %d ++++++++++++++\n", i);
-			float p = predict(X_Train[i], w);
-			float error = (float)y_Train[i] - p;
-			printf("VALOR ESPERADO: %d\n", y_Train[i]);
-			printf("VALOR OBTENIDO: %f\n", p);
-			printf("ERROR: %f\n", error);
-			printf("* PESOS *\n");
-			printf("W1: %f\n", w[0]);
-			printf("W2: %f\n", w[1]);
-			printf("W3: %f\n", w[2]);
-			printf("+++++++++++++++++++++++++++++++++++++\n");
-			if (error > error_level)
-			{
-				fit(delta, error, X_Train[i], &w);
-				error_passed = false;
-			} else {
-				error_passed = true;
-			}
+int main() {
+    srand (time(NULL));
+    int i, j;
+    float alfa, error_usuario, y = 0.0;
+    float error_cuadratico_medio = 0.0;
+    bool validacion = false;
+    alfa = 0.3;
+    error_usuario = 0.0;
+    float error_calculado[7];
+    int patrones[7][3] = {
+        {0, 0, 1},
+        {0, 1, 0},
+        {0, 1, 1},
+        {1, 0, 0},
+        {1, 0, 1},
+        {1, 1, 0},
+        {1, 1, 1}
+    };
+    int resultados[7] = {1,2,3,4,5,6,7};
+    float pesos[3] = /{(random() % 10 + 1), (random() % 10 + 1), (random() % 10 + 1)};/
+    {3.6101157340344, 1.9851622818544, 1.4231924323284};
 
 
-		}
+    printf("INGRESE EL VALOR DE DELTA:\n");
+	scanf("%f", &alfa);
+	printf("INGRESE EL ERROR DESEADO:\n");
+	scanf("%f", &error_usuario);
+    
+    // sumatoria de xi * wi
+    while(!validacion) {
+        /*for(i = 0; i <= 6; i++){
+			patrones[i][0] = leer_binario(1);
+			patrones[i][1] = leer_binario(2);
+			patrones[i][2] = leer_binario(3);
 
-		printf("--------------------------------\n");
+			resultados[i] = leer_resultado();
+		}*/
 
-		fors++;
-	}
+        // y como el peso nuevo
+        for(i = 0; i <= 6; i++){
+            printf("-------- VUELTA %d ---------\n", i);
+            y = y_resultado(patrones[i], pesos);
+            printf("y->%f\n", y);
+            error_calculado[i] = resultados[i] - y;
+            printf("->error calculado -> %f\n",  error_calculado[i]);
+
+            //alfa * error_calculado * c/u
+            if (error_cuadratico_medio != error_usuario) {
+                for(j = 0; j <= 2; j++) {
+                    pesos[j] = ajuste(alfa, error_calculado[i], patrones[i][j], pesos[j]);
+                }
+                validacion = false;
+            } else {
+                validacion = true;
+            }
+            
+            printf("->peso calculado -> %f %f %f \n",  pesos[0], pesos[1], pesos[2]);
+            
+            error_cuadratico_medio = error_cuadratico_medio + pow(error_calculado[i], 2);
+            
+        }
+            
+        error_cuadratico_medio = error_cuadratico_medio / 2;
+
+            
+        
+
+        printf("PESOS -> %f %f %f\n", pesos[0], pesos[1], pesos[2]);
+        printf("ERROR CUADRATICO MEDIO -> %f\n", error_cuadratico_medio);
+        printf("validacion = %f <= %f; -> %f\n", error_cuadratico_medio, error_usuario, (error_cuadratico_medio - error_usuario));
+        if (error_cuadratico_medio != error_usuario) {
+            validacion = false;
+        } else {
+            validacion = true;
+        }
+        printf("%d", validacion);
+    }
 
 
-	printf("------------- EJERCICIOS ------------\n");
-	while(exit == 'Y' || exit == 'y')
-	{
-		read_binary(&X_Test);
-		printf("EL RESULTADO ES DE: %f\n", predict(X_Test, w));
-		printf("DESEA CONTINUAR? PRESIONE Y/y \n");
-		scanf(" %c", &exit);
-	}
 }
-
