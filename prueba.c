@@ -1,8 +1,8 @@
-//#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
-#include <time.h> 
+#include <time.h> //
 
 float y_resultado(int patrones[], float pesos[])
 {
